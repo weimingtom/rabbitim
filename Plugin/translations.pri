@@ -19,7 +19,7 @@ TRANSLATIONS = translations/Plugin_zh_CN.ts \
 for(file, TRANSLATIONS) {
     TRANSLATIONS_TS_FILES += $$_PRO_FILE_PWD_/$${file}
 }
-TRANSLATIONS_QM_FILES = $$replace(TRANSLATIONS_TS_FILES, ".ts", ".qm")
+TRANSLATIONS_QM_FILES = $$replace(TRANSLATIONS_TS_FILES, "\.ts", ".qm")
 
 #rules to generate ts
 isEmpty(QMAKE_LUPDATE) {
@@ -69,27 +69,23 @@ android | CONFIG(static, static|shared) {
 #复制翻译文件到编译目录  
 TRANSLATIONS_OUTPUT_PATH = $${DESTDIR}/translations
 mytranslations.target = mytranslations
-equals(QMAKE_HOST.os, Windows):isEmpty(QMAKE_SH){
+equals(QMAKE_HOST.os, Windows){#:isEmpty(QMAKE_SH){
     TRANSLATIONS_OUTPUT_PATH = $$replace(TRANSLATIONS_OUTPUT_PATH, /, \\)
-    mkpath($${TRANSLATIONS_OUTPUT_PATH})
-    TRANSLATIONS_QM_FILES = $$replace(TRANSLATIONS_QM_FILES, /, \\)
-    for(file, TRANSLATIONS_QM_FILES){
-        isEmpty(mytranslations_commands){
-            mytranslations_commands += $${QMAKE_COPY} $${file} \
-                                    $${TRANSLATIONS_OUTPUT_PATH}\. 
-        }
-        else {
-            mytranslations_commands += && $${QMAKE_COPY} $${file} \
-                                    $${TRANSLATIONS_OUTPUT_PATH}\. 
-        }
+    TRANSLATIONS_QM_FILES = $$replace(TRANSLATIONS_QM_FILES, /, \\)   
+}
+mkpath($${TRANSLATIONS_OUTPUT_PATH})
+for(file, TRANSLATIONS_QM_FILES){
+    isEmpty(mytranslations_commands){
+        mytranslations_commands += $${QMAKE_COPY} $${file} \
+                                $${TRANSLATIONS_OUTPUT_PATH}
     }
-    mytranslations.commands = $$mytranslations_commands 
+    else {
+        mytranslations_commands += && $${QMAKE_COPY} $${file} \
+                                $${TRANSLATIONS_OUTPUT_PATH} 
+    }
 }
-else {
-    mkpath($${TRANSLATIONS_OUTPUT_PATH})
-    mytranslations.commands = \
-        $${QMAKE_COPY} $${TRANSLATIONS_QM_FILES} $${TRANSLATIONS_OUTPUT_PATH}/. 
-}
+mytranslations.commands = $$mytranslations_commands 
+
 !android{  #手机平台不需要  
     QMAKE_EXTRA_TARGETS += mytranslations
     #TODO:需要调试编译前编译翻译   

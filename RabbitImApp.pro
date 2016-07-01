@@ -61,11 +61,11 @@ target.path = $$PREFIX
 android : include(android/android.pri)
 
 win32 : equals(QMAKE_HOST.os, Windows){
-    isEmpty(QMAKE_SH){
+    #isEmpty(QMAKE_SH){
         INSTALL_TARGET = $$system_path($${PREFIX}/$(TARGET))
-    } else {
-        INSTALL_TARGET = $${PREFIX}/$(TARGET)
-    }
+    #} else {
+    #    INSTALL_TARGET = $${PREFIX}/$(TARGET)
+    #}
 
     #mingw{  #手机平台不需要  
     #    RABBITIM_STRIP.target = RABBITIM_STRIP
@@ -107,7 +107,7 @@ win32 : equals(QMAKE_HOST.os, Windows){
         #复制第三方依赖库动态库到编译输出目录  
         THIRD_LIBRARY_DLL = $${THIRD_LIBRARY_PATH}/bin/*.dll
         exists($${THIRD_LIBRARY_DLL}){
-            equals(QMAKE_HOST.os, Windows):isEmpty(QMAKE_SH){
+            equals(QMAKE_HOST.os, Windows){#:isEmpty(QMAKE_SH){
                 THIRD_LIBRARY_DLL = $$system_path($$THIRD_LIBRARY_DLL)
                 TARGET_PATH = $$system_path($$TARGET_PATH)
             }
@@ -121,7 +121,7 @@ win32 : equals(QMAKE_HOST.os, Windows){
     
         THIRD_LIBRARY_LIB = $${THIRD_LIBRARY_PATH}/lib/*.dll
         exists($${THIRD_LIBRARY_LIB}){
-            equals(QMAKE_HOST.os, Windows):isEmpty(QMAKE_SH){
+            equals(QMAKE_HOST.os, Windows){#:isEmpty(QMAKE_SH){
                 THIRD_LIBRARY_LIB = $$system_path($$THIRD_LIBRARY_LIB)
                 TARGET_PATH = $$system_path($$TARGET_PATH)
             }

@@ -124,9 +124,12 @@ fi
 echo "$QMAKE ${RELEASE_PARA}"
 $QMAKE ${RELEASE_PARA}
 ${MAKE} -f Makefile install ${MAKE_PARA}
-rm -fr *
-echo "$QMAKE ${DEBUG_PARA}"
-${QMAKE} ${DEBUG_PARA}
-${MAKE} -f Makefile install ${MAKE_PARA}
+
+if [ -z "$CI" ]; then
+    rm -fr *
+    echo "$QMAKE ${DEBUG_PARA}"
+    ${QMAKE} ${DEBUG_PARA}
+    ${MAKE} -f Makefile install ${MAKE_PARA}
+fi
 
 cd $CUR_DIR

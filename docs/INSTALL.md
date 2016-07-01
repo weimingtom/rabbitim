@@ -86,7 +86,7 @@
 ##### 9. 编译工具：
 
 1. windows
-    * msvc (vs 2013 update 4)
+    * msvc (vs 2015 update 3)
     * mingw gcc
 2. linux
     * gcc、g++

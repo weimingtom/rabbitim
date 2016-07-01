@@ -91,6 +91,7 @@ echo "RABBITIM_BUILD_CROSS_SYSROOT:$RABBITIM_BUILD_CROSS_SYSROOT"
 echo "RABBITIM_BUILD_STATIC:$RABBITIM_BUILD_STATIC"
 echo "PKG_CONFIG_PATH:${PKG_CONFIG_PATH}"
 echo "PKG_CONFIG_LIBDIR:${PKG_CONFIG_LIBDIR}"
+echo "PATH:${PATH}"
 echo ""
 
 echo "configure ..."
@@ -135,7 +136,7 @@ case ${RABBITIM_BUILD_TARGERT} in
                 CONFIG_PARA="${CONFIG_PARA} --with-gnu-ld"
                 ;;
             MINGW* | MSYS*)
-                CONFIG_PARA="--enable-static --disable-shared"
+                CONFIG_PARA="${CONFIG_PARA} --host=$RABBITIM_BUILD_CROSS_HOST"
                 ;;
             *)
             ;;
@@ -151,7 +152,7 @@ esac
 echo "make install"
 echo "pwd:`pwd`"
 CONFIG_PARA="${CONFIG_PARA} --prefix=${RABBITIM_BUILD_PREFIX} "
-CONFIG_PARA="${CONFIG_PARA} --without-png --without-tools --without-sdl"
+CONFIG_PARA="${CONFIG_PARA} --without-tools" # --without-png --without-sdl"
 
 if [ "${RABBITIM_BUILD_TARGERT}" = android ]; then
     echo "../configure ${CONFIG_PARA} CFLAGS=\"${CFLAGS=}\" CPPFLAGS=\"${CPPFLAGS}\""

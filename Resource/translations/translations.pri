@@ -18,7 +18,7 @@ TRANSLATIONS = $$PWD/app_zh_CN.ts \
 for(file, TRANSLATIONS) {
     TRANSLATIONS_TS_FILES += $${file}
 }
-TRANSLATIONS_QM_FILES = $$replace(TRANSLATIONS_TS_FILES, ".ts", ".qm")
+TRANSLATIONS_QM_FILES = $$replace(TRANSLATIONS_TS_FILES, "\.ts", ".qm")
 
 #rules to generate ts
 isEmpty(QMAKE_LUPDATE) {
@@ -51,31 +51,27 @@ QMAKE_EXTRA_COMPILERS += updateqm
 TRANSLATIONS_OUTPUT_PATH = $${TARGET_PATH}/translations
 mytranslations.target = mytranslations
 QT_QM = $$[QT_INSTALL_TRANSLATIONS]/qt_*.qm
-equals(QMAKE_HOST.os, Windows):isEmpty(QMAKE_SH){
+equals(QMAKE_HOST.os, Windows){#:isEmpty(QMAKE_SH){
     TRANSLATIONS_OUTPUT_PATH = $$replace(TRANSLATIONS_OUTPUT_PATH, /, \\)
     QT_QM = $$system_path($${QT_QM})
-    mkpath($${TRANSLATIONS_OUTPUT_PATH})
     TRANSLATIONS_QM_FILES = $$replace(TRANSLATIONS_QM_FILES, /, \\)
-    for(file, TRANSLATIONS_QM_FILES){
-        isEmpty(mytranslations_commands){
-            mytranslations_commands += $${QMAKE_COPY} $${file} \
-                                    $${TRANSLATIONS_OUTPUT_PATH}\. 
-        }
-        else {
-            mytranslations_commands += && $${QMAKE_COPY} $${file} \
-                                    $${TRANSLATIONS_OUTPUT_PATH}\. 
-        }
+}
+
+#QT_QM = $$replace(QT_QM, \\, /)
+mkpath($${TRANSLATIONS_OUTPUT_PATH})
+for(file, TRANSLATIONS_QM_FILES){
+    isEmpty(mytranslations_commands){
+        mytranslations_commands += $${QMAKE_COPY} $${file} \
+                               $${TRANSLATIONS_OUTPUT_PATH} 
     }
-    mytranslations_commands += && $${QMAKE_COPY} $${QT_QM} $${TRANSLATIONS_OUTPUT_PATH}\.
-    mytranslations.commands = $$mytranslations_commands 
+    else {
+        mytranslations_commands += && $${QMAKE_COPY} $${file} \
+                                $${TRANSLATIONS_OUTPUT_PATH} 
+    }
 }
-else {
-    #QT_QM = $$replace(QT_QM, \\, /)
-    mkpath($${TRANSLATIONS_OUTPUT_PATH})
-    mytranslations.commands = \
-        $${QMAKE_COPY} $${TRANSLATIONS_QM_FILES} $${TRANSLATIONS_OUTPUT_PATH}/. && \
-        $${QMAKE_COPY_DIR} $${QT_QM} $${TRANSLATIONS_OUTPUT_PATH}/.
-}
+mytranslations_commands += && $${QMAKE_COPY} $${QT_QM} $${TRANSLATIONS_OUTPUT_PATH}
+mytranslations.commands = $$mytranslations_commands 
+
 !android{  #手机平台不需要  
     QMAKE_EXTRA_TARGETS += mytranslations
     #TODO:需要调试编译前编译翻译   

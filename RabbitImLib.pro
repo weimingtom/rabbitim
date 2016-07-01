@@ -59,11 +59,11 @@ MOBILITY =
 android : include(android/jni/android_jni.pri)
 
 win32:equals(QMAKE_HOST.os, Windows){
-    isEmpty(QMAKE_SH){
+    #isEmpty(QMAKE_SH){
         INSTALL_TARGET = $$system_path($${PREFIX}/$(TARGET))
-    } else {
-        INSTALL_TARGET = $${PREFIX}/$(TARGET)
-    }
+    #} else {
+    #    INSTALL_TARGET = $${PREFIX}/$(TARGET)
+    #}
     #mingw{  #手机平台不需要  
     #    RABBITIM_STRIP.target = RABBITIM_STRIP
     #    RABBITIM_STRIP.commands = "strip $$INSTALL_TARGET"
